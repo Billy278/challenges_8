@@ -3,6 +3,8 @@ package config
 import (
 	"database/sql"
 	"fmt"
+	"os"
+	"strconv"
 	"time"
 )
 
@@ -19,12 +21,14 @@ type PostgresConfig struct {
 }
 
 func NewDBPostges() *sql.DB {
+	pt, _ := strconv.Atoi(os.Getenv("Port"))
+
 	pgConf := PostgresConfig{
-		Port:              5432,
-		Host:              "127.0.0.1",
-		Username:          "postgres",
-		Password:          "billy",
-		DBName:            "DB_Books",
+		Port:              uint(pt),
+		Host:              os.Getenv("Host"),
+		Username:          os.Getenv("Username"),
+		Password:          os.Getenv("Password"),
+		DBName:            os.Getenv("DBName"),
 		MaxOpenConnection: 7,
 		MaxIdleConnection: 5,
 		MaxIdleTime:       int(30 * time.Minute),
@@ -58,6 +62,7 @@ func NewDBPostges() *sql.DB {
 	db.SetMaxIdleConns(pgConf.MaxIdleConnection)
 	db.SetMaxOpenConns(pgConf.MaxOpenConnection)
 	db.SetConnMaxIdleTime(time.Duration(pgConf.MaxIdleTime))
+
 	return db
 
 }
