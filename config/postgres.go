@@ -48,15 +48,16 @@ func NewDBPostges() *sql.DB {
 		pgConf.Password,
 		pgConf.DBName,
 	)
+	fmt.Println(connString)
 	db, err := sql.Open("postgres", connString)
 	if err != nil {
 		panic(err)
 	}
 
 	// test connection
-	if err := db.Ping(); err != nil {
-		panic(err)
-	}
+	// if err := db.Ping(); err != nil {
+	// 	panic(err)
+	// }
 
 	// set extended config
 	db.SetMaxIdleConns(pgConf.MaxIdleConnection)

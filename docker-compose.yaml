@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  app:
+   container_name: app
+   build:
+    context: .
+    dockerfile: Dockerfile
+   image: "app-golang:1.0.0"
+   networks:
+     - project1
+   links:
+     - "postgres"
+   depends_on:
+    - postgres
+  postgres:
+   container_name: postgres
+   build:
+    context: ./build
+    dockerfile: Dockerfile
+   image: testpostgres:latest
+   restart: always
+   ports:
+     - "5433:5432"
+   environment:
+    POSTGRES_USER: billy
+    POSTGRES_PASSWORD: billy
+    POSTGRES_DB: DB_Books
+   networks:
+     - project1
+  nginx_project8:
+    container_name: nginx_project8
+    build:
+      context: ./build/nginx
+      dockerfile: Dockerfile
+    image: nginx_p8:latest
+    restart: always
+    ports:
+      - "8080:80"
+    networks:
+      - project1
+    links:
+      - "app"
+    depends_on:
+      - "app"
+
+networks:
+  project1:
+   name: project1
+   driver: bridge
